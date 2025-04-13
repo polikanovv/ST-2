@@ -6,14 +6,13 @@
 #include <cmath>
 
 class Circle {
-
-private:
+ private:
     double radius;
     double circ;
     double surface;
     static constexpr double MATH_PI = 3.14159265358979323846;
 
-public:
+ public:
     explicit Circle(double r);
 
     void applyRadius(double r);
