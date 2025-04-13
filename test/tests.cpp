@@ -1,232 +1,181 @@
 // Copyright 2025 UNN-CS Team
-
 #include <gtest/gtest.h>
 #include <cstdint>
-#include "circle.h"
-
-
-#include <iostream>
-#include <cassert>
 #include <cmath>
-#include "circle.h"
-#include "tasks.h"
+#include "../include/circle.h"
+#include "../include/tasks.h"
 
-const double PI = 3.141592653589793;
-const double EPSILON = 1e-6;
+constexpr double EPSILON = 1e-6;
 
-void testCircleSetRadius() {
-    Circle c(1.0);
-    c.setRadius(2.0);
-    assert(std::abs(c.getRadius() - 2.0) < EPSILON);
-    assert(std::abs(c.getFerence() - (2 * PI * 2.0)) < EPSILON);
-    assert(std::abs(c.getArea() - (PI * 4.0)) < EPSILON);
-}
+// Тесты класса Circle
 
-void testCircleSetFerence() {
-    Circle c(1.0);
-    double newFerence = 10.0;
-    c.setFerence(newFerence);
-    double expectedRadius = newFerence / (2 * PI);
-    double expectedArea = PI * expectedRadius * expectedRadius;
-    assert(std::abs(c.getRadius() - expectedRadius) < EPSILON);
-    assert(std::abs(c.getFerence() - newFerence) < EPSILON);
-    assert(std::abs(c.getArea() - expectedArea) < EPSILON);
-}
-
-void testCircleSetArea() {
-    Circle c(1.0);
-    double newArea = 50.0;
-    c.setArea(newArea);
-    double expectedRadius = std::sqrt(newArea / PI);
-    double expectedFerence = 2 * PI * expectedRadius;
-    assert(std::abs(c.getRadius() - expectedRadius) < EPSILON);
-    assert(std::abs(c.getFerence() - expectedFerence) < EPSILON);
-    assert(std::abs(c.getArea() - newArea) < EPSILON);
-}
-
-void testConstructor() {
-    Circle c(3.0);
-    assert(std::abs(c.getRadius() - 3.0) < EPSILON);
-    assert(std::abs(c.getFerence() - (2 * PI * 3.0)) < EPSILON);
-    assert(std::abs(c.getArea() - (PI * 9.0)) < EPSILON);
-}
-
-void testEarthAndRopeGap() {
-    double earthRadiusKm = 6378.1;
-    double extraLengthMeter = 1.0;
-    double gap = earthAndRopeGap(earthRadiusKm, extraLengthMeter);
-    double expectedGap = (extraLengthMeter / 1000.0) / (2 * PI);
-    assert(std::abs(gap - expectedGap) < EPSILON);
-}
-
-void testPoolCostsConcreteArea() {
-    double poolRadius = 3.0;
-    double roadWidth = 1.0;
-    double costPerSquareMeterConcrete = 1000.0;
-    double costPerMeterFence = 2000.0;
-    double concreteCost, fenceCost;
-    poolCosts(poolRadius, roadWidth, costPerSquareMeterConcrete, costPerMeterFence, concreteCost, fenceCost);
-
-    Circle inner(poolRadius);
-    Circle outer(poolRadius + roadWidth);
-    double expectedConcreteCost = (outer.getArea() - inner.getArea()) * costPerSquareMeterConcrete;
-    assert(std::abs(concreteCost - expectedConcreteCost) < EPSILON);
-}
-
-void testPoolCostsFenceCost() {
-    double poolRadius = 3.0;
-    double roadWidth = 1.0;
-    double costPerSquareMeterConcrete = 1000.0;
-    double costPerMeterFence = 2000.0;
-    double concreteCost, fenceCost;
-    poolCosts(poolRadius, roadWidth, costPerSquareMeterConcrete, costPerMeterFence, concreteCost, fenceCost);
-
-    Circle outer(poolRadius + roadWidth);
-    double expectedFenceCost = outer.getFerence() * costPerMeterFence;
-    assert(std::abs(fenceCost - expectedFenceCost) < EPSILON);
-}
-
-void testCircleMultipleUpdates() {
+TEST(CircleTest, ConstructorAndGetRadius) {
     Circle c(5.0);
-    c.setFerence(2 * PI * 10.0); 
-    assert(std::abs(c.getRadius() - 10.0) < EPSILON);
-    c.setArea(PI * 16.0); 
-    assert(std::abs(c.getRadius() - 4.0) < EPSILON);
+    EXPECT_NEAR(c.pullRadius(), 5.0, EPSILON);
 }
 
-void testNegativeRadius() {
-
-    Circle c(1.0);
-    c.setRadius(-5.0);
-    assert(std::abs(c.getRadius() + 5.0) < EPSILON);
-}
-
-void testZeroValues() {
-    Circle c(0.0);
-    assert(std::abs(c.getRadius() - 0.0) < EPSILON);
-    assert(std::abs(c.getFerence() - 0.0) < EPSILON);
-    assert(std::abs(c.getArea() - 0.0) < EPSILON);
-}
-
-void testCirclePrecision() {
-    Circle c(1.2345);
-    double r = c.getRadius();
-    double f = c.getFerence();
-    double a = c.getArea();
-    assert(std::abs(r - 1.2345) < EPSILON);
-    assert(std::abs(f - (2 * PI * 1.2345)) < EPSILON);
-    assert(std::abs(a - (PI * 1.2345 * 1.2345)) < EPSILON);
-}
-
-void testPoolCostsDifferentParameters() {
-    double poolRadius = 4.0;
-    double roadWidth = 2.0;
-    double costPerSquareMeterConcrete = 1200.0;
-    double costPerMeterFence = 2500.0;
-    double concreteCost, fenceCost;
-    poolCosts(poolRadius, roadWidth, costPerSquareMeterConcrete, costPerMeterFence, concreteCost, fenceCost);
-
-    Circle inner(poolRadius);
-    Circle outer(poolRadius + roadWidth);
-    double expectedConcreteCost = (outer.getArea() - inner.getArea()) * costPerSquareMeterConcrete;
-    double expectedFenceCost = outer.getFerence() * costPerMeterFence;
-    assert(std::abs(concreteCost - expectedConcreteCost) < EPSILON);
-    assert(std::abs(fenceCost - expectedFenceCost) < EPSILON);
-}
-
-void testCircleSetAndGetConsistency() {
-    Circle c(10.0);
-    c.setRadius(15.0);
-    double r = c.getRadius();
-    c.setFerence(c.getFerence());
-    assert(std::abs(c.getRadius() - r) < EPSILON);
-}
-
-void testTaskEdgeCase() {
-
-    double gap = earthAndRopeGap(100.0, 0.0);
-    assert(std::abs(gap - 0.0) < EPSILON);
-}
-
-void testPoolCostsZeroRoadWidth() {
-    double poolRadius = 3.0;
-    double roadWidth = 0.0;
-    double costPerSquareMeterConcrete = 1000.0;
-    double costPerMeterFence = 2000.0;
-    double concreteCost, fenceCost;
-    poolCosts(poolRadius, roadWidth, costPerSquareMeterConcrete, costPerMeterFence, concreteCost, fenceCost);
-
-    Circle pool(poolRadius);
-    assert(std::abs(concreteCost - 0.0) < EPSILON);
-    assert(std::abs(fenceCost - (pool.getFerence() * costPerMeterFence)) < EPSILON);
-}
-
-void testAdditionalConsistency() {
-
+TEST(CircleTest, GetCircAndSurface) {
     Circle c(2.0);
-    c.setRadius(5.0);
-    double r1 = c.getRadius();
-    c.setFerence(c.getFerence());
-    double r2 = c.getRadius();
-    c.setArea(c.getArea());
-    double r3 = c.getRadius();
-    assert(std::abs(r1 - r2) < EPSILON);
-    assert(std::abs(r2 - r3) < EPSILON);
+    double expectedCirc = 2.0 * 3.14159265358979323846 * 2.0;
+    double expectedArea = 3.14159265358979323846 * 2.0 * 2.0;
+    EXPECT_NEAR(c.pullCircum(), expectedCirc, EPSILON);
+    EXPECT_NEAR(c.pullSurface(), expectedArea, EPSILON);
 }
 
-void testSmallPoolParameters() {
-
-    double poolRadius = 1.0;
-    double roadWidth = 0.5;
-    double costPerSquareMeterConcrete = 800.0;
-    double costPerMeterFence = 1500.0;
-    double concreteCost, fenceCost;
-    poolCosts(poolRadius, roadWidth, costPerSquareMeterConcrete, costPerMeterFence, concreteCost, fenceCost);
-    Circle inner(poolRadius);
-    Circle outer(poolRadius + roadWidth);
-    assert(std::abs(concreteCost - ((outer.getArea() - inner.getArea()) * costPerSquareMeterConcrete)) < EPSILON);
-    assert(std::abs(fenceCost - (outer.getFerence() * costPerMeterFence)) < EPSILON);
+TEST(CircleTest, ApplyRadiusUpdatesValues) {
+    Circle c(1.0);
+    c.applyRadius(4.0);
+    double expectedCirc = 2.0 * 3.14159265358979323846 * 4.0;
+    double expectedArea = 3.14159265358979323846 * 4.0 * 4.0;
+    EXPECT_NEAR(c.pullRadius(), 4.0, EPSILON);
+    EXPECT_NEAR(c.pullCircum(), expectedCirc, EPSILON);
+    EXPECT_NEAR(c.pullSurface(), expectedArea, EPSILON);
 }
 
-void testLargeExtraLength() {
-
-    double gap = earthAndRopeGap(5000.0, 100.0);
-    double expectedGap = (100.0 / 1000.0) / (2 * PI);
-    assert(std::abs(gap - expectedGap) < EPSILON);
+TEST(CircleTest, ApplyCircUpdatesValues) {
+    Circle c(1.0);
+    double newCirc = 15.707963;
+    c.applyCircum(newCirc);
+    double expectedRadius = newCirc / (2.0 * 3.14159265358979323846);
+    double expectedArea = 3.14159265358979323846 * expectedRadius * expectedRadius;
+    EXPECT_NEAR(c.pullRadius(), expectedRadius, EPSILON);
+    EXPECT_NEAR(c.pullCircum(), newCirc, EPSILON);
+    EXPECT_NEAR(c.pullSurface(), expectedArea, EPSILON);
 }
 
-void testExtremeValues() {
-
-    Circle c2(1e6);
-    c2.setRadius(1e7);
-    assert(c2.getRadius() == 1e7);
-
-    Circle c3(1e-6);
-    c3.setRadius(1e-7);
-    assert(c3.getRadius() == 1e-7);
+TEST(CircleTest, ApplySurfaceUpdatesValues) {
+    Circle c(1.0);
+    double newSurface = 50.265482;
+    c.applySurface(newSurface);
+    double expectedRadius = std::sqrt(newSurface / 3.14159265358979323846);
+    double expectedCirc = 2.0 * 3.14159265358979323846 * expectedRadius;
+    EXPECT_NEAR(c.pullRadius(), expectedRadius, EPSILON);
+    EXPECT_NEAR(c.pullSurface(), newSurface, EPSILON);
+    EXPECT_NEAR(c.pullCircum(), expectedCirc, EPSILON);
 }
 
-void runTests() {
-    testCircleSetRadius();
-    testCircleSetFerence();
-    testCircleSetArea();
-    testConstructor();
-    testEarthAndRopeGap();
-    testPoolCostsConcreteArea();
-    testPoolCostsFenceCost();
-    testCircleMultipleUpdates();
-    testNegativeRadius();
-    testZeroValues();
-    testCirclePrecision();
-    testPoolCostsDifferentParameters();
-    testCircleSetAndGetConsistency();
-    testTaskEdgeCase();
-    testPoolCostsZeroRoadWidth();
-    testAdditionalConsistency();
-    testSmallPoolParameters();
-    testLargeExtraLength();
-    testExtremeValues();
-
-    std::cout << "Все тесты успешно пройдены." << std::endl;
+TEST(CircleTest, SequentialUpdates) {
+    Circle c(3.0);
+    c.applyRadius(6.0);
+    double updatedCirc = c.pullCircum();
+    c.applyCircum(updatedCirc);
+    double updatedArea = c.pullSurface();
+    c.applySurface(updatedArea);
+    EXPECT_NEAR(c.pullRadius(), 6.0, EPSILON);
 }
 
+TEST(CircleTest, IdenticalCircles) {
+    Circle c1(10.0);
+    Circle c2(10.0);
+    EXPECT_NEAR(c1.pullCircum(), c2.pullCircum(), EPSILON);
+    EXPECT_NEAR(c1.pullSurface(), c2.pullSurface(), EPSILON);
+}
+
+TEST(CircleTest, ZeroRadius) {
+    Circle c(0.0);
+    EXPECT_NEAR(c.pullRadius(), 0.0, EPSILON);
+    EXPECT_NEAR(c.pullCircum(), 0.0, EPSILON);
+    EXPECT_NEAR(c.pullSurface(), 0.0, EPSILON);
+}
+
+TEST(CircleTest, NegativeRadius) {
+    Circle c(-5.0);
+    EXPECT_NEAR(c.pullRadius(), -5.0, EPSILON);
+    double expectedCirc = 2.0 * 3.14159265358979323846 * (-5.0);
+    double expectedArea = 3.14159265358979323846 * 25.0;
+    EXPECT_NEAR(c.pullCircum(), expectedCirc, EPSILON);
+    EXPECT_NEAR(c.pullSurface(), expectedArea, EPSILON);
+}
+
+TEST(CircleTest, NegativeCirc) {
+    Circle c(5.0);
+    double negCirc = -31.415926;
+    c.applyCircum(negCirc);
+    double expectedRadius = negCirc / (2.0 * 3.14159265358979323846);
+    double expectedArea = 3.14159265358979323846 * expectedRadius * expectedRadius;
+    EXPECT_NEAR(c.pullRadius(), expectedRadius, EPSILON);
+    EXPECT_NEAR(c.pullCircum(), negCirc, EPSILON);
+    EXPECT_NEAR(c.pullSurface(), expectedArea, EPSILON);
+}
+
+// Тесты задач
+
+TEST(TaskTest, RopeClearanceCalculation) {
+    double gap = computeRopeClearance();
+    double expectedGap = 1.0 / (2.0 * 3.14159265358979323846);
+    EXPECT_NEAR(gap, expectedGap, 1e-5);
+}
+
+TEST(TaskTest, PoolConcreteCost) {
+    double concreteCost = 0.0, fenceCost = 0.0;
+    computePoolExpenses(concreteCost, fenceCost);
+    double expectedConcrete = 7.0 * 3.14159265358979323846 * 1000.0;
+    EXPECT_NEAR(concreteCost, expectedConcrete, 1e-2);
+}
+
+TEST(TaskTest, PoolFenceCost) {
+    double concreteCost = 0.0, fenceCost = 0.0;
+    computePoolExpenses(concreteCost, fenceCost);
+    double expectedFence = 2.0 * 3.14159265358979323846 * 4.0 * 2000.0;
+    EXPECT_NEAR(fenceCost, expectedFence, 1e-2);
+}
+
+TEST(CircleTest, MultipleSequentialUpdates) {
+    Circle c(2.0);
+    c.applyRadius(3.0);
+    double f1 = c.pullCircum();
+    c.applyCircum(f1 + 5.0);
+    double r1 = c.pullRadius();
+    c.applySurface(c.pullSurface() + 10.0);
+    double r2 = c.pullRadius();
+    EXPECT_FALSE(std::isnan(r1));
+    EXPECT_FALSE(std::isnan(r2));
+}
+
+TEST(CircleTest, FloatPrecision) {
+    Circle a(3.1415);
+    Circle b(3.1415);
+    EXPECT_NEAR(a.pullRadius(), b.pullRadius(), EPSILON);
+    EXPECT_NEAR(a.pullCircum(), b.pullCircum(), EPSILON);
+    EXPECT_NEAR(a.pullSurface(), b.pullSurface(), EPSILON);
+}
+
+TEST(CircleTest, LargeValueCheck) {
+    Circle c(1e6);
+    c.applyRadius(1e6);
+    double expectedCirc = 2.0 * 3.14159265358979323846 * 1e6;
+    EXPECT_NEAR(c.pullCircum(), expectedCirc, 1e-2);
+}
+
+TEST(CircleTest, SequentialCircAndArea) {
+    Circle c(10.0);
+    c.applyCircum(20.0);
+    double rAfterCirc = c.pullRadius();
+    c.applySurface(314.159265);
+    double rAfterArea = c.pullRadius();
+    EXPECT_FALSE(std::isnan(rAfterCirc));
+    EXPECT_FALSE(std::isnan(rAfterArea));
+}
+
+TEST(CircleTest, SetAreaCorrectness) {
+    Circle c(0.5);
+    double newSurface = 100.0;
+    c.applySurface(newSurface);
+    double expectedRadius = std::sqrt(newSurface / 3.14159265358979323846);
+    EXPECT_NEAR(c.pullRadius(), expectedRadius, EPSILON);
+}
+
+TEST(CircleTest, SetCircumferenceCorrectness) {
+    Circle c(4.0);
+    double newCirc = 2.0 * 3.14159265358979323846 * 4.0 + 0.123456;
+    c.applyCircum(newCirc);
+    double expectedRadius = newCirc / (2.0 * 3.14159265358979323846);
+    EXPECT_NEAR(c.pullRadius(), expectedRadius, 1e-5);
+}
+
+TEST(TaskTest, PoolExpensesNonNegative) {
+    double concreteCost = 0.0, fenceCost = 0.0;
+    computePoolExpenses(concreteCost, fenceCost);
+    EXPECT_GE(concreteCost, 0.0);
+    EXPECT_GE(fenceCost, 0.0);
+}
