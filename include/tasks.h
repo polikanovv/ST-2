@@ -1,8 +1,9 @@
-#ifndef TASKS_H
+// Copyright 2022 UNN-CS
+#ifndef INCLUDE_TASKS_H_
 #define TASKS_H
 
-double computeRopeClearance();           
-void computePoolExpenses(double& cCost,  
+double computeRopeClearance();    
+void computePoolExpenses(double& cCost,
     double& fCost);
 
-#endif
+#endif  // INCLUDE_TASKS_H_

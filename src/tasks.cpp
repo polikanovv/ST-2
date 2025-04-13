@@ -1,8 +1,8 @@
+// Copyright 2022 UNN-CS
 #include "../include/tasks.h"
 #include "../include/circle.h"
 
 double computeRopeClearance() {
-
     double earthRadiusM = 6378.1 * 1000.0;
 
     Circle earth(earthRadiusM);
@@ -26,8 +26,8 @@ void computePoolExpenses(double& cCost, double& fCost) {
     Circle extendedPool(poolRad + walkwayW);
 
     double ringArea = extendedPool.pullSurface() - basePool.pullSurface();
-    cCost = ringArea * 1000.0;           
+    cCost = ringArea * 1000.0;
 
     double fencePerimeter = extendedPool.pullCircum();
-    fCost = fencePerimeter * 2000.0;     
+    fCost = fencePerimeter * 2000.0;
 }

@@ -7,8 +7,6 @@
 
 constexpr double EPSILON = 1e-6;
 
-// Тесты класса Circle
-
 TEST(CircleTest, ConstructorAndGetRadius) {
     Circle c(5.0);
     EXPECT_NEAR(c.pullRadius(), 5.0, EPSILON);
@@ -37,7 +35,8 @@ TEST(CircleTest, ApplyCircUpdatesValues) {
     double newCirc = 15.707963;
     c.applyCircum(newCirc);
     double expectedRadius = newCirc / (2.0 * 3.14159265358979323846);
-    double expectedArea = 3.14159265358979323846 * expectedRadius * expectedRadius;
+    double expectedArea = 3.14159265358979323846
+        * expectedRadius * expectedRadius;
     EXPECT_NEAR(c.pullRadius(), expectedRadius, EPSILON);
     EXPECT_NEAR(c.pullCircum(), newCirc, EPSILON);
     EXPECT_NEAR(c.pullSurface(), expectedArea, EPSILON);
@@ -92,13 +91,12 @@ TEST(CircleTest, NegativeCirc) {
     double negCirc = -31.415926;
     c.applyCircum(negCirc);
     double expectedRadius = negCirc / (2.0 * 3.14159265358979323846);
-    double expectedArea = 3.14159265358979323846 * expectedRadius * expectedRadius;
+    double expectedArea = 3.14159265358979323846
+        * expectedRadius * expectedRadius;
     EXPECT_NEAR(c.pullRadius(), expectedRadius, EPSILON);
     EXPECT_NEAR(c.pullCircum(), negCirc, EPSILON);
     EXPECT_NEAR(c.pullSurface(), expectedArea, EPSILON);
 }
-
-// Тесты задач
 
 TEST(TaskTest, RopeClearanceCalculation) {
     double gap = computeRopeClearance();
